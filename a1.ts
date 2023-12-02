@@ -7,7 +7,6 @@
 
 import inquirer from "inquirer";
 import clear from "clear";
-import { buffer } from "stream/consumers";
 // import util from 'node:util';
 
 let groceriesPrices = [200, 150, 120, 30, 80, 300, 220];
@@ -76,7 +75,6 @@ function showingAllFruits(): void {
   for (let count = 0; count < fruits.length; count++) {
     console.log(`${count + 1}.\t\t${fruits[count]}\t\t${fruitPrices[count]}`);
   }
-  console.log(`Enter ${fruits.length + 1} to go to main menu`);
 }
 function showingAllVegetables(): void {
   line();
@@ -87,7 +85,6 @@ function showingAllVegetables(): void {
       `${count + 1}.\t\t${vegetables[count]}\t\t${vegetablePrices[count]}`
     );
   }
-  console.log(`Enter ${vegetables.length + 1} to go to main menu`);
 }
 function showingAllGrocereies(): void {
   line();
@@ -98,7 +95,6 @@ function showingAllGrocereies(): void {
       `${count + 1}.\t\t${Groceries[count]}\t\t${groceriesPrices[count]}`
     );
   }
-  console.log(`Enter ${Groceries.length + 1} to go to main menu`);
 }
 //***************************************************************************** */
 
@@ -233,6 +229,7 @@ async function paymentMethod() {
 
   for (let count: number = 0; count < payment.length; count++) {
     console.log(`Do you pay by ${payment[count]} method `);
+    let bool: boolean = false;
     let temporary = await asking();
     if (temporary == true && payment[count] == "Online") {
       for (let counter in onlineMethods) {
@@ -242,27 +239,30 @@ async function paymentMethod() {
           console.log(
             `Thank You for using ${payment[count]} Payment method using ${onlineMethods[counter]}`
           );
+          bool = true;
+        }
+        break;
+      }
+    }
+    if (bool == false) {
+      if (temporary == true && payment[count] == "Card") {
+        for (let counter in Cards) {
+          console.log(`Do you pay by ${Cards[counter]}`);
+          let question = await asking();
+          if (question == true) {
+            console.log(
+              `Thank You for using ${payment[count]} Payment method using ${Cards[counter]}`
+            );
+          }
           break;
         }
       }
-    }
-    if (temporary == true && payment[count] == "Card") {
-      for (let counter in Cards) {
-        console.log(`Do you pay by ${Cards[counter]}`);
-        let question = await asking();
-        if (question == true) {
-          console.log(
-            `Thank You for using ${payment[count]} Payment method using ${Cards[counter]}`
-          );
-          break;
-        }
+      if (temporary == true && payment[count] == "Cash on Delivery") {
+        console.log(`Thank you for using for using ${payment[count]} method`);
+        break;
       }
-    }
-    if (temporary == true && payment[count] == "Cash on Delivery") {
-      console.log(`Thank you for using for using ${payment[count]} method`);
-      break;
     } else {
-      console.log("You donot select any payment methods");
+      process.exit();
     }
   }
 }
